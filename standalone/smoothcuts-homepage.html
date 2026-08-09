@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  SmoothCuts — Standalone Homepage Prototype
+  ----------------------------------------------------------------------------
+  Single-file build for stakeholder preview or static hosting.
+  • Embedded CSS (design tokens mirror the production Tailwind theme)
+  • Embedded vanilla JavaScript — no frameworks
+  • Only external dependency: Google Fonts (Syne / DM Sans / JetBrains Mono)
+  • All sections: nav, hero, marquee, featured work, services, stats,
+    testimonials, consultation form, footer
+  • Interactions: glass nav on scroll, mobile overlay menu, scroll reveals,
+    stat count-up, form validation — all respect prefers-reduced-motion
+  ============================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmoothCuts | Web Design &amp; Development for Growing Businesses</title>
+  <meta name="description" content="SmoothCuts is a boutique web design agency building high-performance, conversion-focused websites for ambitious small businesses." />
+  <meta property="og:title" content="SmoothCuts | Web Design &amp; Development for Growing Businesses" />
+  <meta property="og:description" content="Boutique web design agency building high-performance, conversion-focused websites for ambitious small businesses." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ------------------------------- Tokens ------------------------------- */
+    :root {
+      --base: #0A0A0F;
+      --coal: #111118;
+      --card: #1A1A24;
+      --line: #2A2A38;
+      --violet: #6C63FF;
+      --violet-h: #8B85FF;
+      --mint: #00E5BE;
+      --coral: #FF6B6B;
+      --gold: #FFB800;
+      --snow: #F0F0F8;
+      --mute: #9898B0;
+      --dim: #5A5A72;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --grad-display: linear-gradient(135deg, #6C63FF 0%, #00E5BE 100%);
+      --grad-cta: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+      --nav-h: 72px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--base);
+      color: var(--snow);
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: rgba(108, 99, 255, 0.35); color: #fff; }
+
+    :focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+
+    h1, h2, h3, .font-display {
+      font-family: "Syne", sans-serif;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .mono { font-family: "JetBrains Mono", monospace; }
+
+    .wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+    @media (min-width: 768px) { .wrap { padding: 0 32px; } }
+
+    .gradient-text {
+      background: var(--grad-display);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .section-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--violet);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::before { content: ""; width: 24px; height: 1px; background: var(--violet); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--grad-cta); color: #fff;
+      padding: 16px 32px; border-radius: 8px; border: 0;
+      font-family: "DM Sans", sans-serif; font-weight: 500; font-size: 16px;
+      text-decoration: none; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(108, 99, 255, 0.25);
+      transition: transform 250ms ease, box-shadow 250ms ease;
+      min-height: 48px;
+    }
+    .btn-primary:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(108, 99, 255, 0.4); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--snow);
+      border: 1px solid var(--line); padding: 16px 32px; border-radius: 8px;
+      font-family: "DM Sans", sans-serif; font-size: 16px;
+      text-decoration: none; cursor: pointer;
+      transition: border-color 200ms ease, color 200ms ease;
+      min-height: 48px;
+    }
+    .btn-ghost:hover { border-color: var(--violet); color: var(--violet); }
+
+    /* Skip link */
+    .skip-link {
+      position: fixed; top: -100px; left: 16px; z-index: 2000;
+      background: var(--violet); color: #fff; padding: 12px 20px;
+      border-radius: 8px; font-weight: 500; text-decoration: none;
+      transition: top 200ms ease;
+    }
+    .skip-link:focus-visible { top: 16px; outline: none; }
+
+    /* -------------------------------- Nav --------------------------------- */
+    .nav {
+      position: fixed; inset: 0 0 auto 0; z-index: 1000; height: var(--nav-h);
+      display: flex; align-items: center;
+      transition: background 300ms ease, border-color 300ms ease;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom-color: var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .logo {
+      font-family: "Syne", sans-serif; font-weight: 800; font-size: 20px;
+      color: var(--snow); text-decoration: none; transition: color 150ms ease;
+    }
+    .logo:hover { color: var(--violet); }
+    .logo .dot { color: var(--violet); -webkit-text-fill-color: var(--violet); }
+    .nav-links { display: none; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a {
+      position: relative; color: var(--mute); text-decoration: none;
+      font-size: 15px; padding: 8px 0; transition: color 150ms ease;
+    }
+    .nav-links a::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: var(--violet); transform: scaleX(0); transition: transform 200ms ease;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--violet); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    .nav-cta {
+      display: none; background: var(--grad-cta); color: #fff; padding: 12px 24px;
+      border-radius: 8px; font-size: 14px; font-weight: 500; text-decoration: none;
+      transition: transform 250ms ease, box-shadow 250ms ease;
+    }
+    .nav-cta:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(108, 99, 255, 0.4); }
+    .hamburger {
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      background: transparent; border: 1px solid var(--line); border-radius: 8px;
+      color: var(--snow); cursor: pointer;
+    }
+    .hamburger span { position: relative; display: block; width: 20px; height: 14px; }
+    .hamburger i {
+      position: absolute; left: 0; width: 20px; height: 2px; background: currentColor;
+      transition: transform 300ms ease, opacity 200ms ease, top 300ms ease;
+    }
+    .hamburger i:nth-child(1) { top: 0; }
+    .hamburger i:nth-child(2) { top: 6px; }
+    .hamburger i:nth-child(3) { top: 12px; }
+    .hamburger[aria-expanded="true"] i:nth-child(1) { top: 6px; transform: rotate(45deg); }
+    .hamburger[aria-expanded="true"] i:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] i:nth-child(3) { top: 6px; transform: rotate(-45deg); }
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+      .nav-cta { display: inline-flex; }
+      .hamburger { display: none; }
+    }
+
+    /* Mobile menu overlay */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 999; background: rgba(10, 10, 15, 0.95);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex; flex-direction: column; justify-content: center; padding: 0 32px;
+      opacity: 0; visibility: hidden; transition: opacity 300ms ease, visibility 300ms ease;
+    }
+    .mobile-menu.open { opacity: 1; visibility: visible; }
+    .mobile-menu a.menu-link {
+      display: block; min-height: 48px; padding: 12px 0;
+      font-family: "Syne", sans-serif; font-size: 30px; font-weight: 700;
+      color: var(--snow); text-decoration: none; transition: color 150ms ease;
+    }
+    .mobile-menu a.menu-link:hover { color: var(--violet); }
+    .mobile-menu .menu-close {
+      position: absolute; top: 16px; right: 20px; width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: 1px solid var(--line); border-radius: 8px;
+      color: var(--snow); font-size: 20px; cursor: pointer;
+    }
+    .mobile-menu .menu-cta { margin-top: 40px; width: 100%; justify-content: center; }
+
+    /* -------------------------------- Hero -------------------------------- */
+    .hero {
+      position: relative; min-height: 100vh; display: flex; align-items: center;
+      padding-top: var(--nav-h); overflow: hidden;
+    }
+    .hero-bg { position: absolute; inset: 0; pointer-events: none; }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+    .orb { position: absolute; border-radius: 50%; filter: blur(130px); }
+    .orb-1 { width: 560px; height: 560px; background: rgba(108, 99, 255, 0.14); top: -160px; left: -160px; animation: mesh 18s ease-in-out infinite; }
+    .orb-2 { width: 520px; height: 520px; background: rgba(0, 229, 190, 0.08); bottom: -190px; right: -130px; animation: mesh 18s ease-in-out -9s infinite; }
+    @keyframes mesh {
+      0% { transform: translate(-6%, -4%) scale(1); }
+      50% { transform: translate(6%, 5%) scale(1.12); }
+      100% { transform: translate(-6%, -4%) scale(1); }
+    }
+    .hero-inner {
+      position: relative; z-index: 1; display: grid; gap: 56px;
+      padding-top: 48px; padding-bottom: 48px;
+    }
+    @media (min-width: 1024px) { .hero-inner { grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; } }
+    .hero-eyebrow {
+      font-family: "JetBrains Mono", monospace; font-size: 13px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet);
+    }
+    .hero-eyebrow .caret {
+      display: inline-block; width: 7px; height: 14px; margin-left: 6px;
+      background: var(--violet); transform: translateY(2px);
+      animation: blink 1.05s steps(1) infinite;
+    }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+    .hero h1 {
+      font-size: clamp(52px, 7vw, 96px); font-weight: 800; line-height: 1.05;
+      margin-top: 24px;
+    }
+    .hero-sub {
+      margin-top: 24px; max-width: 520px; color: var(--mute);
+      font-size: clamp(18px, 2vw, 20px);
+    }
+    .hero-ctas { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+    @media (min-width: 640px) { .hero-ctas { flex-direction: row; align-items: center; } }
+    .proof { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 24px; }
+    .proof p { font-size: 14px; color: var(--dim); }
+    .proof ul { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; list-style: none; }
+    .proof li {
+      border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px;
+      font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.14em; color: var(--dim);
+      filter: grayscale(1);
+    }
+
+    /* Browser mockup */
+    .mockup-wrap { position: relative; max-width: 560px; margin: 0 auto; width: 100%; }
+    @media (min-width: 1024px) { .mockup-wrap { max-width: none; } }
+    .mockup-float { animation: floaty 3s ease-in-out infinite; }
+    @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .mockup {
+      position: relative; overflow: hidden; border: 1px solid var(--line);
+      border-radius: 12px; box-shadow: 0 40px 120px rgba(108, 99, 255, 0.25);
+      background: var(--card);
+    }
+    .mockup-bar {
+      display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+      background: var(--card); border-bottom: 1px solid var(--line);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: var(--coral); } .dot-y { background: var(--gold); } .dot-g { background: var(--mint); }
+    .mockup-url {
+      margin-left: 12px; flex: 1; background: var(--base); border-radius: 6px;
+      padding: 4px 12px; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--dim);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ------------------------------- Marquee ------------------------------- */
+    .marquee {
+      background: var(--coal); border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line); padding: 16px 0; overflow: hidden;
+    }
+    .marquee-track { display: flex; width: max-content; animation: scroll 32s linear infinite; }
+    @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee span {
+      display: flex; align-items: center; white-space: nowrap;
+      font-family: "Syne", sans-serif; font-weight: 500; font-size: 14px; color: var(--dim);
+    }
+    .marquee .item { padding: 0 24px; }
+    .marquee .sep { color: var(--violet); }
+
+    /* ------------------------------ Sections ------------------------------ */
+    section.block { padding: 60px 0; }
+    @media (min-width: 768px) { section.block { padding: 80px 0; } }
+    @media (min-width: 1280px) { section.block { padding: 120px 0; } }
+    .bg-coal { background: var(--coal); }
+
+    h2.block-title { font-size: clamp(32px, 4vw, 56px); font-weight: 700; margin-top: 16px; }
+    p.block-sub { margin-top: 20px; max-width: 640px; font-size: 18px; color: var(--mute); }
+
+    .grid { display: grid; gap: 24px; margin-top: 48px; }
+    @media (min-width: 768px) { .grid.cols { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1280px) { .grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; } }
+
+    /* Project cards */
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+      overflow: hidden; display: block; text-decoration: none; color: inherit;
+      transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+    }
+    .card:hover {
+      transform: translateY(-6px); border-color: var(--violet);
+      box-shadow: 0 20px 60px rgba(108, 99, 255, 0.15);
+    }
+    .card-thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
+    .card-thumb svg { width: 100%; height: 100%; display: block; transition: transform 500ms var(--ease); }
+    .card:hover .card-thumb svg { transform: scale(1.04); }
+    .card-overlay {
+      position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center;
+      padding: 24px; background: rgba(10, 10, 15, 0.85); opacity: 0; transition: opacity 300ms ease;
+    }
+    .card:hover .card-overlay { opacity: 1; }
+    .card-overlay span {
+      background: var(--grad-cta); color: #fff; padding: 10px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 500; transform: translateY(16px); transition: transform 300ms ease;
+    }
+    .card:hover .card-overlay span { transform: translateY(0); }
+    .card-body { padding: 20px 24px 24px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      font-family: "JetBrains Mono", monospace; font-size: 12px; line-height: 1;
+      padding: 5px 10px; border-radius: 4px;
+    }
+    .pill-v { color: var(--violet); background: rgba(108, 99, 255, 0.12); border: 1px solid rgba(108, 99, 255, 0.3); }
+    .pill-m { color: var(--mint); background: rgba(0, 229, 190, 0.1); border: 1px solid rgba(0, 229, 190, 0.3); }
+    .card-body h3 { margin-top: 16px; font-size: 20px; font-weight: 700; transition: color 200ms ease; }
+    .card:hover .card-body h3 { color: var(--violet); }
+    .card-body p { margin-top: 8px; font-size: 15px; color: var(--mute); }
+
+    .section-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
+    .link-arrow { color: var(--violet); font-weight: 500; text-decoration: none; font-size: 16px; }
+    .link-arrow:hover { text-decoration: underline; }
+
+    /* Service cards */
+    .service-card { padding: 32px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease; height: 100%; }
+    .service-card:hover { transform: translateY(-4px); border-color: var(--violet); box-shadow: 0 20px 60px rgba(108, 99, 255, 0.15); }
+    .service-card .top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .icon-box {
+      width: 48px; height: 48px; border-radius: 8px; border: 1px solid var(--line);
+      background: var(--base); display: flex; align-items: center; justify-content: center;
+      color: var(--mute); transition: color 300ms ease;
+    }
+    .service-card:hover .icon-box { color: var(--violet); }
+    .phase { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--dim); }
+    .service-card h3 { margin-top: 24px; font-size: 24px; font-weight: 700; }
+    .service-card p { margin-top: 12px; font-size: 15px; color: var(--mute); }
+
+    /* Stats */
+    .stats {
+      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      padding: 64px 0;
+      background: linear-gradient(135deg, rgba(108,99,255,0.08) 0%, rgba(0,229,190,0.08) 100%);
+    }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (min-width: 1280px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+    .stat { text-align: center; padding: 8px 16px; }
+    .stats-grid .stat:nth-child(even) { border-left: 1px solid var(--line); }
+    @media (min-width: 1280px) {
+      .stats-grid .stat { border-left: 0; }
+      .stats-grid .stat + .stat { border-left: 1px solid var(--line); }
+    }
+    .stat .num { font-family: "Syne", sans-serif; font-weight: 800; font-size: clamp(40px, 5vw, 64px); line-height: 1; }
+    .stat .lbl { margin-top: 12px; font-size: 14px; color: var(--mute); }
+
+    /* Testimonials */
+    .testi { padding: 40px 32px; display: flex; flex-direction: column; height: 100%; }
+    .stars { display: flex; gap: 4px; color: var(--gold); }
+    .testi blockquote { margin-top: 24px; flex: 1; color: var(--snow); }
+    .testi figcaption { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 16px; }
+    .avatar {
+      width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+      background: var(--grad-display); color: #fff; display: flex; align-items: center;
+      justify-content: center; font-family: "Syne", sans-serif; font-weight: 700; font-size: 18px;
+    }
+    .who b { display: block; font-weight: 600; }
+    .who small { color: var(--mute); font-size: 14px; }
+
+    /* Form */
+    .form-shell {
+      max-width: 720px; margin: 0 auto; background: var(--coal);
+      border: 1px solid var(--line); border-radius: 16px; padding: 28px;
+    }
+    @media (min-width: 768px) { .form-shell { padding: 48px; } }
+    .form-shell h2 { font-size: clamp(32px, 4vw, 48px); font-weight: 700; }
+    .form-shell .sub { margin: 16px 0 36px; font-size: 18px; color: var(--mute); }
+    .field { margin-bottom: 20px; }
+    .field label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+    .field label .req { color: var(--coral); }
+    .field input, .field select, .field textarea {
+      width: 100%; min-height: 48px; background: var(--card); border: 1px solid var(--line);
+      border-radius: 8px; padding: 14px 18px; color: var(--snow); font: inherit;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .field textarea { resize: vertical; }
+    .field ::placeholder { color: var(--dim); }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none; border-color: var(--violet); box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+    }
+    .field .err { margin-top: 6px; font-size: 14px; color: var(--coral); display: none; }
+    .field.invalid .err { display: block; }
+    .field.invalid input, .field.invalid textarea { border-color: var(--coral); }
+    .counter { text-align: right; font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--dim); margin-top: 6px; }
+    .submit-btn {
+      width: 100%; padding: 18px; border: 0; border-radius: 8px; cursor: pointer;
+      background: var(--grad-cta); color: #fff; font-family: "Syne", sans-serif;
+      font-weight: 600; font-size: 16px; transition: opacity 250ms ease, transform 250ms ease;
+    }
+    .submit-btn:hover { opacity: 0.9; transform: scale(1.01); }
+    .privacy { margin-top: 16px; text-align: center; font-size: 13px; color: var(--dim); }
+    .form-success {
+      text-align: center; padding: 48px 24px; border-radius: 12px;
+      border: 1px solid rgba(0, 229, 190, 0.3); background: rgba(0, 229, 190, 0.06);
+      display: none;
+    }
+    .form-success h3 { font-size: 24px; margin-top: 20px; }
+    .form-success p { margin-top: 12px; color: var(--mute); }
+    .form-success .mint { color: var(--mint); }
+    .check-circle {
+      width: 56px; height: 56px; margin: 0 auto; border-radius: 50%;
+      border: 1px solid rgba(0, 229, 190, 0.3); background: rgba(0, 229, 190, 0.1);
+      display: flex; align-items: center; justify-content: center; color: var(--mint);
+    }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--line); padding: 80px 0 40px; }
+    .foot-grid { display: grid; gap: 48px; }
+    @media (min-width: 768px) { .foot-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1280px) { .foot-grid { grid-template-columns: 2fr 1fr 1fr 1.4fr; } }
+    .foot-grid h4 { font-family: "JetBrains Mono", monospace; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); font-weight: 400; }
+    .foot-grid ul { list-style: none; margin-top: 20px; display: grid; gap: 12px; }
+    .foot-grid a { color: var(--mute); text-decoration: none; font-size: 15px; transition: color 150ms ease; }
+    .foot-grid a:hover { color: var(--violet); }
+    .tagline { margin-top: 16px; color: var(--mute); font-size: 15px; max-width: 280px; }
+    .socials { margin-top: 24px; display: flex; gap: 4px; list-style: none; }
+    .socials a { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: var(--dim); transition: color 200ms ease, transform 200ms ease; }
+    .socials a:hover { color: var(--violet); transform: translateY(-2px); }
+    .foot-bottom {
+      margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line);
+      display: flex; flex-direction: column; gap: 12px; font-size: 13px; color: var(--dim);
+    }
+    @media (min-width: 768px) { .foot-bottom { flex-direction: row; justify-content: space-between; } }
+
+    /* Reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); transition-delay: var(--d, 0ms); }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    [data-hero-reveal] { opacity: 0; transform: translateY(28px); animation: heroIn 900ms var(--ease) forwards; animation-delay: var(--d, 0ms); }
+    @keyframes heroIn { to { opacity: 1; transform: none; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      .reveal, [data-hero-reveal] { opacity: 1 !important; transform: none !important; }
+      .marquee-track { animation: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ================================ NAV ================================ -->
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="logo" href="#">SmoothCuts<span class="dot">.</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="#work" class="active">Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a class="nav-cta" href="#contact">Start a Project</a>
+        <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span><i></i><i></i><i></i></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <button class="menu-close" id="menuClose" aria-label="Close navigation menu">✕</button>
+    <nav aria-label="Mobile navigation">
+      <a class="menu-link" href="#work">Work</a>
+      <a class="menu-link" href="#about">About</a>
+      <a class="menu-link" href="#services">Services</a>
+      <a class="menu-link" href="#contact">Contact</a>
+      <a class="btn-primary menu-cta" href="#contact">Start a Project</a>
+    </nav>
+  </div>
+
+  <main id="main">
+    <!-- ================================ HERO ================================ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-grid"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+      </div>
+
+      <div class="wrap hero-inner">
+        <div>
+          <p class="hero-eyebrow" data-hero-reveal style="--d:120ms">
+            Web Design &amp; Development Studio<span class="caret" aria-hidden="true"></span>
+          </p>
+          <h1 id="hero-title" data-hero-reveal style="--d:240ms">
+            We Build <span class="gradient-text">Websites</span> That Work As Hard As You Do.
+          </h1>
+          <p class="hero-sub" data-hero-reveal style="--d:360ms">
+            SmoothCuts crafts high-performance, conversion-focused websites that
+            turn visitors into paying customers. Clean. Fast. Effective.
+          </p>
+          <div class="hero-ctas" data-hero-reveal style="--d:480ms">
+            <a class="btn-primary" href="#contact">Start a Project →</a>
+            <a class="btn-ghost" href="#work">View Our Work</a>
+          </div>
+          <div class="proof" data-hero-reveal style="--d:600ms">
+            <p>Trusted by 50+ growing businesses</p>
+            <ul aria-label="Client logos">
+              <li>NORTHCOTE</li><li>VELA&amp;CO</li><li>PIPELINE</li><li>HAVEN</li><li>ARCLIGHT</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Browser mockup visual anchor -->
+        <div class="mockup-wrap" data-hero-reveal style="--d:520ms">
+          <div class="mockup-float">
+            <div class="mockup" role="img" aria-label="Screenshot preview of a premium SmoothCuts-designed website">
+              <div class="mockup-bar">
+                <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+                <span class="mockup-url">smoothcuts.studio</span>
+              </div>
+              <svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#6C63FF"/><stop offset="1" stop-color="#00E5BE"/>
+                  </linearGradient>
+                  <linearGradient id="cf" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#1A1A24"/><stop offset="1" stop-color="#111118"/>
+                  </linearGradient>
+                </defs>
+                <rect width="1440" height="900" fill="#0A0A0F"/>
+                <circle cx="1180" cy="200" r="260" fill="#6C63FF" opacity="0.13"/>
+                <circle cx="1240" cy="640" r="200" fill="#00E5BE" opacity="0.08"/>
+                <rect x="48" y="44" width="34" height="34" rx="9" fill="url(#hg)"/>
+                <rect x="100" y="55" width="120" height="13" rx="6" fill="#F0F0F8" opacity="0.92"/>
+                <rect x="1180" y="45" width="122" height="30" rx="8" fill="#1A1A24"/>
+                <rect x="1206" y="56" width="74" height="8" rx="4" fill="#9898B0"/>
+                <rect x="48" y="150" width="210" height="22" rx="11" fill="#6C63FF" opacity="0.35"/>
+                <rect x="48" y="200" width="560" height="44" rx="10" fill="#F0F0F8" opacity="0.95"/>
+                <rect x="48" y="258" width="470" height="44" rx="10" fill="url(#hg)"/>
+                <rect x="48" y="316" width="520" height="44" rx="10" fill="#F0F0F8" opacity="0.95"/>
+                <rect x="48" y="392" width="420" height="12" rx="6" fill="#9898B0"/>
+                <rect x="48" y="416" width="380" height="12" rx="6" fill="#9898B0"/>
+                <rect x="48" y="470" width="160" height="48" rx="10" fill="url(#hg)"/>
+                <rect x="78" y="488" width="100" height="12" rx="6" fill="#FFFFFF"/>
+                <rect x="224" y="470" width="160" height="48" rx="10" fill="none" stroke="#2A2A38" stroke-width="1.5"/>
+                <rect x="254" y="488" width="100" height="12" rx="6" fill="#9898B0"/>
+                <rect x="760" y="150" width="632" height="560" rx="18" fill="url(#cf)" stroke="#2A2A38"/>
+                <rect x="788" y="182" width="280" height="18" rx="9" fill="#F0F0F8" opacity="0.9"/>
+                <rect x="788" y="216" width="200" height="10" rx="5" fill="#9898B0"/>
+                <rect x="788" y="258" width="176" height="120" rx="12" fill="#0A0A0F" stroke="#2A2A38"/>
+                <rect x="988" y="258" width="176" height="120" rx="12" fill="#0A0A0F" stroke="#2A2A38"/>
+                <rect x="1188" y="258" width="176" height="120" rx="12" fill="#0A0A0F" stroke="#2A2A38"/>
+                <rect x="812" y="330" width="90" height="26" rx="6" fill="url(#hg)" opacity="0.9"/>
+                <rect x="1012" y="330" width="90" height="26" rx="6" fill="url(#hg)" opacity="0.9"/>
+                <rect x="1212" y="330" width="90" height="26" rx="6" fill="url(#hg)" opacity="0.9"/>
+                <rect x="812" y="286" width="120" height="10" rx="5" fill="#9898B0"/>
+                <rect x="1012" y="286" width="120" height="10" rx="5" fill="#9898B0"/>
+                <rect x="1212" y="286" width="120" height="10" rx="5" fill="#9898B0"/>
+                <rect x="788" y="412" width="576" height="240" rx="12" fill="#0A0A0F" stroke="#2A2A38"/>
+                <polyline points="812,608 890,560 968,586 1046,510 1124,540 1202,470 1280,498 1340,440" fill="none" stroke="#00E5BE" stroke-width="3" stroke-linecap="round"/>
+                <polyline points="812,620 890,600 968,610 1046,580 1124,594 1202,560 1280,574 1340,548" fill="none" stroke="#6C63FF" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+                <rect x="48" y="600" width="300" height="14" rx="7" fill="#F0F0F8" opacity="0.85"/>
+                <rect x="48" y="630" width="240" height="10" rx="5" fill="#9898B0"/>
+                <rect x="48" y="668" width="96" height="34" rx="8" fill="#1A1A24"/>
+                <rect x="160" y="668" width="96" height="34" rx="8" fill="#1A1A24"/>
+                <rect x="272" y="668" width="96" height="34" rx="8" fill="#1A1A24"/>
+                <rect x="66" y="680" width="52" height="9" rx="4" fill="#9898B0"/>
+                <rect x="178" y="680" width="52" height="9" rx="4" fill="#9898B0"/>
+                <rect x="290" y="680" width="52" height="9" rx="4" fill="#9898B0"/>
+                <rect x="0" y="870" width="1440" height="30" fill="#111118"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== MARQUEE ============================== -->
+    <div class="marquee" aria-label="Services ticker">
+      <div class="marquee-track" id="marqueeTrack">
+        <span><span class="item">Web Design</span><span class="sep">✦</span></span>
+        <span><span class="item">UI/UX Design</span><span class="sep">✦</span></span>
+        <span><span class="item">Next.js Development</span><span class="sep">✦</span></span>
+        <span><span class="item">Webflow</span><span class="sep">✦</span></span>
+        <span><span class="item">WordPress</span><span class="sep">✦</span></span>
+        <span><span class="item">Brand Strategy</span><span class="sep">✦</span></span>
+        <span><span class="item">Conversion Optimization</span><span class="sep">✦</span></span>
+        <span><span class="item">SEO</span><span class="sep">✦</span></span>
+      </div>
+    </div>
+
+    <!-- ========================= FEATURED PROJECTS ========================= -->
+    <section class="block" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2 class="block-title" id="work-title" style="margin-top:0">Selected Work</h2>
+          <a class="link-arrow" href="#work">View All Projects →</a>
+        </div>
+
+        <div class="grid cols cols-3" style="margin-top:48px">
+          <!-- Project 1 — Auravelle -->
+          <a class="card reveal" href="#" style="--d:0ms" aria-label="View the Auravelle case study">
+            <div class="card-thumb">
+              <svg viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs><linearGradient id="p1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9A86A"/><stop offset="1" stop-color="#8B85FF"/></linearGradient></defs>
+                <rect width="1600" height="1000" fill="#111118"/>
+                <circle cx="1420" cy="120" r="300" fill="#C9A86A" opacity="0.10"/>
+                <circle cx="150" cy="900" r="280" fill="#8B85FF" opacity="0.08"/>
+                <rect x="48" y="44" width="34" height="34" rx="9" fill="url(#p1)"/>
+                <rect x="100" y="54" width="120" height="13" rx="6" fill="#F0F0F8" opacity="0.92"/>
+                <rect x="1212" y="44" width="122" height="30" rx="8" fill="#1A1A24"/>
+                <rect x="1238" y="55" width="74" height="8" rx="4" fill="#9898B0"/>
+                <rect x="48" y="168" width="190" height="20" rx="10" fill="#C9A86A" opacity="0.4"/>
+                <rect x="48" y="214" width="620" height="50" rx="10" fill="#F0F0F8" opacity="0.95"/>
+                <rect x="48" y="282" width="520" height="50" rx="10" fill="url(#p1)"/>
+                <rect x="48" y="360" width="480" height="12" rx="6" fill="#9898B0"/>
+                <rect x="48" y="386" width="420" height="12" rx="6" fill="#9898B0"/>
+                <rect x="48" y="436" width="150" height="44" rx="9" fill="url(#p1)"/>
+                <rect x="76" y="452" width="92" height="12" rx="6" fill="#FFFFFF"/>
+                <rect x="864" y="360" width="180" height="210" rx="12" fill="#1A1A24" stroke="#2A2A38"/>
+                <rect x="878" y="374" width="152" height="110" rx="8" fill="url(#p1)" opacity="0.35"/>
+                <rect x="878" y="502" width="120" height="11" rx="5" fill="#F0F0F8" opacity="0.85"/>
+                <rect x="1064" y="360" width="180" height="210" rx="12" fill="#1A1A24" stroke="#2A2A38"/>
+                <rect x="1078" y="374" width="152" height="110" rx="8" fill="url(#p1)" opacity="0.5"/>
+                <rect x="1078" y="502" width="120" height="11" rx="5" fill="#F0F0F8" opacity="0.85"/>
+                <rect x="1264" y="360" width="180" height="210" rx="12" fill="#1A1A24" stroke="#2A2A38"/>
+                <rect x="1278" y="374" width="152" height="110" rx="8" fill="url(#p1)" opacity="0.65"/>
+                <rect x="1278" y="502" width="120" height="11" rx="5" fill="#F0F0F8" opacity="0.85"/>
+                <rect x="0" y="920" width="1600" height="80" fill="#1A1A24"/>
+              </svg>
+              <div class="card-overlay"><span>View Case Study →</span></div>
+            </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-v">E-commerce</span><span class="pill pill-m">Webflow</span></div>
+              <h3>Auravelle</h3>
+              <p>Complete e-commerce redesign that increased checkout conversion by 38%</p>
+            </div>
+          </a>
+
+          <!-- Project 2 — Meridien Partners -->
+          <a class="card reveal" href="#" style="--d:80ms" aria-label="View the Meridien Partners case study">
+            <div class="card-thumb">
+              <svg viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs><linearGradient id="p2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6C63FF"/><stop offset="1" stop-color="#00E5BE"/></linearGradient></defs>
+                <rect width="1600" height="1000" fill="#111118"/>
+                <circle cx="1420" cy="120" r="300" fill="#6C63FF" opacity="0.10"/>
+                <rect x="48" y="44" width="34" height="34" rx="9" fill="url(#p2)"/>
+                <rect x="100" y="54" width="120" height="13" rx="6" fill="#F0F0F8" opacity="0.92"/>
+                <rect x="1212" y="44" width="122" height="30" rx="8" fill="#1A1A24"/>
+                <rect x="48" y="168" width="190" height="20" rx="10" fill="#6C63FF" opacity="0.4"/>
+                <rect x="48" y="214" width="620" height="50" rx="10" fill="#F0F0F8" opacity="0.95"/>
+                <rect x="48" y="282" width="520" height="50" rx="10" fill="url(#p2)"/>
+                <rect x="48" y="360" width="480" height="12" rx="6" fill="#9898B0"/>
+                <rect x="864" y="340" width="600" height="130" rx="14" fill="#1A1A24" stroke="#2A2A38"/>
+                <rect x="890" y="368" width="60" height="24" rx="6" fill="url(#p2)"/>
+                <rect x="890" y="408" width="120" height="9" rx="4" fill="#9898B0"/>
+                <rect x="1086" y="368" width="60" height="24" rx="6" fill="url(#p2)"/>
+                <rect x="1086" y="408" width="120" height="9" rx="4" fill="#9898B0"/>
+                <rect x="1282" y="368" width="60" height="24" rx="6" fill="url(#p2)"/>
+                <rect x="1282" y="408" width="120" height="9" rx="4" fill="#9898B0"/>
+                <rect x="864" y="500" width="600" height="46" rx="10" fill="#1A1A24" stroke="#2A2A38"/>
+                <circle cx="890" cy="523" r="10" fill="#2A2A38"/>
+                <rect x="912" y="514" width="220" height="10" rx="5" fill="#9898B0"/>
+                <rect x="864" y="558" width="600" height="46" rx="10" fill="#1A1A24" stroke="#2A2A38"/>
+                <circle cx="890" cy="581" r="10" fill="#2A2A38"/>
+                <rect x="912" y="572" width="180" height="10" rx="5" fill="#9898B0"/>
+                <rect x="0" y="920" width="1600" height="80" fill="#1A1A24"/>
+              </svg>
+              <div class="card-overlay"><span>View Case Study →</span></div>
+            </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-v">B2B Services</span><span class="pill pill-m">Next.js</span></div>
+              <h3>Meridien Partners</h3>
+              <p>Lead generation website rebuild that tripled qualified monthly inquiries</p>
+            </div>
+          </a>
+
+          <!-- Project 3 — Flowpilot -->
+          <a class="card reveal" href="#" style="--d:160ms" aria-label="View the Flowpilot case study">
+            <div class="card-thumb">
+              <svg viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs><linearGradient id="p3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00E5BE"/><stop offset="1" stop-color="#6C63FF"/></linearGradient></defs>
+                <rect width="1600" height="1000" fill="#111118"/>
+                <circle cx="150" cy="900" r="280" fill="#00E5BE" opacity="0.08"/>
+                <rect x="48" y="44" width="34" height="34" rx="9" fill="url(#p3)"/>
+                <rect x="100" y="54" width="120" height="13" rx="6" fill="#F0F0F8" opacity="0.92"/>
+                <rect x="48" y="168" width="190" height="20" rx="10" fill="#00E5BE" opacity="0.35"/>
+                <rect x="48" y="214" width="620" height="50" rx="10" fill="#F0F0F8" opacity="0.95"/>
+                <rect x="48" y="282" width="520" height="50" rx="10" fill="url(#p3)"/>
+                <rect x="48" y="360" width="480" height="12" rx="6" fill="#9898B0"/>
+                <rect x="864" y="330" width="600" height="300" rx="14" fill="#1A1A24" stroke="#2A2A38"/>
+                <rect x="888" y="352" width="160" height="14" rx="7" fill="#F0F0F8" opacity="0.9"/>
+                <rect x="904" y="538" width="44" height="42" rx="7" fill="#2A2A38"/>
+                <rect x="980" y="502" width="44" height="78" rx="7" fill="#2A2A38"/>
+                <rect x="1056" y="520" width="44" height="60" rx="7" fill="#2A2A38"/>
+                <rect x="1132" y="470" width="44" height="110" rx="7" fill="#2A2A38"/>
+                <rect x="1208" y="488" width="44" height="92" rx="7" fill="#2A2A38"/>
+                <rect x="1284" y="440" width="44" height="140" rx="7" fill="url(#p3)"/>
+                <rect x="1360" y="456" width="44" height="124" rx="7" fill="#2A2A38"/>
+                <line x1="896" y1="582" x2="1432" y2="582" stroke="#2A2A38"/>
+                <rect x="0" y="920" width="1600" height="80" fill="#1A1A24"/>
+              </svg>
+              <div class="card-overlay"><span>View Case Study →</span></div>
+            </div>
+            <div class="card-body">
+              <div class="pills"><span class="pill pill-v">SaaS</span><span class="pill pill-m">Next.js</span></div>
+              <h3>Flowpilot</h3>
+              <p>SaaS marketing site with interactive product demo increasing trial signups</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== SERVICES ============================= -->
+    <section class="block bg-coal" id="services" aria-labelledby="services-title">
+      <div class="wrap">
+        <p class="section-label reveal">What We Do</p>
+        <h2 class="block-title reveal" id="services-title" style="--d:80ms">End-to-End Web Solutions For Growing Businesses</h2>
+        <p class="block-sub reveal" style="--d:160ms">From strategy to launch — we handle every layer of your website so you can focus on running your business.</p>
+
+        <div class="grid cols cols-3">
+          <div class="service-card reveal" style="--d:0ms">
+            <div class="top">
+              <span class="icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></span>
+              <span class="phase">Phase 01</span>
+            </div>
+            <h3>Discovery &amp; Strategy</h3>
+            <p>Deep-dive audience research, sitemap architecture, user flow mapping, and conversion copywriting that sets the foundation for everything we build.</p>
+          </div>
+          <div class="service-card reveal" style="--d:80ms">
+            <div class="top">
+              <span class="icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+              <span class="phase">Phase 02</span>
+            </div>
+            <h3>UI/UX Design</h3>
+            <p>Responsive interface wireframing, custom component libraries, and interactive Figma prototypes you can test before a single line of code is written.</p>
+          </div>
+          <div class="service-card reveal" style="--d:160ms">
+            <div class="top">
+              <span class="icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/><path d="m13 4-2 16"/></svg></span>
+              <span class="phase">Phase 03</span>
+            </div>
+            <h3>Web Engineering</h3>
+            <p>Pixel-perfect front-end development, CMS integration, clean semantic code, and back-end configurations built to last.</p>
+          </div>
+          <div class="service-card reveal" style="--d:240ms">
+            <div class="top">
+              <span class="icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15c6-3 8-9 8-11s-8 2-11 8c-1.2.4-2.5.7-4 1l5 5c.3-1.5.6-2.8 1-4Z"/><path d="M9 15c-2 1-4 5-4 5s4-2 5-4"/><circle cx="15" cy="9" r="1.6"/></svg></span>
+              <span class="phase">Phase 04</span>
+            </div>
+            <h3>Performance &amp; SEO</h3>
+            <p>Technical on-page SEO, image optimization, Core Web Vitals tuning, and mobile performance optimization before every launch.</p>
+          </div>
+          <div class="service-card reveal" style="--d:320ms">
+            <div class="top">
+              <span class="icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3 18l3 3 5.8-5.8a4.5 4.5 0 0 0 5.9-5.9L15 12l-3-3 2.7-2.7Z"/></svg></span>
+              <span class="phase">Phase 05</span>
+            </div>
+            <h3>Ongoing Maintenance</h3>
+            <p>Post-launch technical support, security updates, cloud hosting management, and continuous conversion rate improvements.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ STATS ============================== -->
+    <section class="stats" aria-label="Agency statistics">
+      <dl class="wrap stats-grid" id="statsGrid">
+        <div class="stat"><dd class="num gradient-text"><span class="count" data-value="50" data-suffix="+">0+</span></dd><dt class="lbl">Projects Launched</dt></div>
+        <div class="stat"><dd class="num gradient-text"><span class="count" data-value="8">0</span></dd><dt class="lbl">In-House Experts</dt></div>
+        <div class="stat"><dd class="num gradient-text"><span class="count" data-value="100" data-suffix="%">0%</span></dd><dt class="lbl">On-Time Delivery</dt></div>
+        <div class="stat"><dd class="num gradient-text"><span class="count" data-value="4.9" data-decimals="1" data-suffix="★">0★</span></dd><dt class="lbl">Client Rating</dt></div>
+      </dl>
+    </section>
+
+    <!-- ============================ TESTIMONIALS =========================== -->
+    <section class="block" aria-labelledby="testi-title" id="about">
+      <div class="wrap">
+        <p class="section-label reveal">What Clients Say</p>
+        <h2 class="block-title reveal" id="testi-title" style="--d:80ms">Results Speak. Our Clients Speak Louder.</h2>
+
+        <div class="grid cols cols-3">
+          <figure class="card testi reveal" style="--d:0ms">
+            <div class="stars" role="img" aria-label="Rated 5 out of 5 stars">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+            </div>
+            <blockquote>&ldquo;SmoothCuts completely transformed how our business looks online. Within 60 days of launch, our inbound leads doubled. The team was professional, fast, and genuinely cared about our results.&rdquo;</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">A</span>
+              <span class="who"><b>Amara Coyle</b><small>CEO, Auravelle</small></span>
+            </figcaption>
+          </figure>
+
+          <figure class="card testi reveal" style="--d:80ms">
+            <div class="stars" role="img" aria-label="Rated 5 out of 5 stars">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+            </div>
+            <blockquote>&ldquo;We'd worked with two other agencies before SmoothCuts. The difference was night and day. They delivered exactly what they promised, on time, and our page speed went from 48 to 97 on Google.&rdquo;</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">D</span>
+              <span class="who"><b>Daniel Reyes</b><small>Founder, Meridien Partners</small></span>
+            </figcaption>
+          </figure>
+
+          <figure class="card testi reveal" style="--d:160ms">
+            <div class="stars" role="img" aria-label="Rated 5 out of 5 stars">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.9 8.6l6.6.9-4.8 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5Z"/></svg>
+            </div>
+            <blockquote>&ldquo;The SmoothCuts team made the whole process completely painless. They understood our business immediately and built a site that actually converts visitors. Best investment we've made in years.&rdquo;</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">P</span>
+              <span class="who"><b>Priya Nair</b><small>Marketing Director, Flowpilot</small></span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== CONTACT ============================== -->
+    <section class="block" id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <div class="form-shell reveal">
+          <p class="section-label">Start a Project</p>
+          <h2 id="contact-title" style="margin-top:16px">Tell Us About Your Business.</h2>
+          <p class="sub">Fill out the brief below and we'll get back to you within 1 business day with a clear plan.</p>
+
+          <form id="projectForm" novalidate>
+            <div class="field" id="f-name">
+              <label for="name">Full Name <span class="req" aria-hidden="true">*</span></label>
+              <input id="name" name="name" type="text" autocomplete="name" placeholder="Your full name" aria-describedby="name-err" />
+              <p class="err" id="name-err" role="alert">Please enter your full name.</p>
+            </div>
+            <div class="field" id="f-email">
+              <label for="email">Business Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@company.com" aria-describedby="email-err" />
+              <p class="err" id="email-err" role="alert">Please enter a valid business email.</p>
+            </div>
+            <div class="field">
+              <label for="company">Company Name</label>
+              <input id="company" name="company" type="text" autocomplete="organization" placeholder="Your company or brand name" />
+            </div>
+            <div class="field">
+              <label for="budget">Budget Range</label>
+              <select id="budget" name="budget">
+                <option value="" disabled selected>Select your budget range</option>
+                <option>Under $5,000</option>
+                <option>$5,000 – $10,000</option>
+                <option>$10,000 – $25,000</option>
+                <option>$25,000+</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+            <div class="field" id="f-brief">
+              <label for="brief">Project Brief <span class="req" aria-hidden="true">*</span></label>
+              <textarea id="brief" name="brief" rows="4" maxlength="500" placeholder="Briefly describe your project, goals, and any specific requirements..." aria-describedby="brief-err brief-counter"></textarea>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                <p class="err" id="brief-err" role="alert">Tell us a little about your project.</p>
+                <p class="counter" id="brief-counter">0/500</p>
+              </div>
+            </div>
+            <button class="submit-btn" type="submit">Send My Brief →</button>
+            <p class="privacy">🔒 Your information is completely private and never shared with anyone.</p>
+          </form>
+
+          <div class="form-success" id="formSuccess" role="status">
+            <div class="check-circle">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>
+            </div>
+            <h3>Brief received.</h3>
+            <p>Thanks for reaching out. We reply to every inquiry within <span class="mint">1 business day</span> — keep an eye on your inbox.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =============================== FOOTER =============================== -->
+  <footer role="contentinfo">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <a class="logo" href="#">SmoothCuts<span class="dot">.</span></a>
+          <p class="tagline">Built for businesses that mean business.</p>
+          <ul class="socials" aria-label="Social profiles">
+            <li><a href="#" aria-label="SmoothCuts on LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.2v.1M12 17v-3.8a2.2 2.2 0 0 1 4.4 0V17"/></svg></a></li>
+            <li><a href="#" aria-label="SmoothCuts on Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8v.1" stroke-width="2.4"/></svg></a></li>
+            <li><a href="#" aria-label="SmoothCuts on Dribbble"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M5.5 9.5c5 1.5 9.5.8 12.8-2M18.8 17.5C16 13.5 12 11 6.5 11M9 3.7c3 4 4.5 8.5 5 16"/></svg></a></li>
+            <li><a href="#" aria-label="SmoothCuts on Twitter/X"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l16 16M20 4 4 20"/></svg></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Pages</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#services">Web Design</a></li>
+            <li><a href="#services">Development</a></li>
+            <li><a href="#services">SEO &amp; Performance</a></li>
+            <li><a href="#services">Maintenance</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Get in Touch</h4>
+          <ul>
+            <li><a href="mailto:hello@smoothcuts.studio">hello@smoothcuts.studio</a></li>
+            <li><a href="tel:+15550134882">+1 (555) 013-4882</a></li>
+            <li style="color:var(--mute);font-size:15px;max-width:240px;">Level 4, Startup Hub, Malviya Nagar, Jaipur, Rajasthan 302017</li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <p>© <span id="year">2026</span> SmoothCuts. All rights reserved.</p>
+        <p>Built by SmoothCuts. Obviously.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+      var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* ------------------------- Sticky glass nav ------------------------- */
+      var nav = document.getElementById("nav");
+      function onScroll() { nav.classList.toggle("scrolled", window.scrollY > 80); }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      /* --------------------------- Mobile menu ---------------------------- */
+      var burger = document.getElementById("hamburger");
+      var menu = document.getElementById("mobileMenu");
+      var closeBtn = document.getElementById("menuClose");
+
+      function setMenu(open) {
+        menu.classList.toggle("open", open);
+        menu.setAttribute("aria-hidden", String(!open));
+        burger.setAttribute("aria-expanded", String(open));
+        burger.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+        document.body.style.overflow = open ? "hidden" : "";
+        if (open) closeBtn.focus();
+      }
+      burger.addEventListener("click", function () { setMenu(!menu.classList.contains("open")); });
+      closeBtn.addEventListener("click", function () { setMenu(false); });
+      menu.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
+
+      /* ------------------------- Scroll reveals --------------------------- */
+      if (prefersReduced) {
+        document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("is-visible"); });
+      } else {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { entry.target.classList.add("is-visible"); io.unobserve(entry.target); }
+          });
+        }, { threshold: 0.15 });
+        document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+      }
+
+      /* --------------------------- Count-up stats -------------------------- */
+      function formatCount(el, n) {
+        var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+        var suffix = el.getAttribute("data-suffix") || "";
+        return n.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
+      }
+      var counters = document.querySelectorAll(".count");
+      if (prefersReduced) {
+        counters.forEach(function (el) { el.textContent = formatCount(el, parseFloat(el.getAttribute("data-value"))); });
+      } else {
+        var counterIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            var target = parseFloat(el.getAttribute("data-value"));
+            var duration = 1600, start = null;
+            function step(ts) {
+              if (start === null) start = ts;
+              var p = Math.min((ts - start) / duration, 1);
+              var eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+              el.textContent = formatCount(el, target * eased);
+              if (p < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+            counterIO.unobserve(el);
+          });
+        }, { threshold: 0.4 });
+        counters.forEach(function (el) { counterIO.observe(el); });
+      }
+
+      /* --------------------------- Form validation ------------------------- */
+      var form = document.getElementById("projectForm");
+      var success = document.getElementById("formSuccess");
+      var brief = document.getElementById("brief");
+      var counter = document.getElementById("brief-counter");
+
+      brief.addEventListener("input", function () {
+        counter.textContent = brief.value.length + "/500";
+      });
+
+      function markInvalid(id, invalid) {
+        document.getElementById(id).classList.toggle("invalid", invalid);
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = document.getElementById("name").value.trim();
+        var email = document.getElementById("email").value.trim();
+        var briefVal = brief.value.trim();
+        var ok = true;
+
+        markInvalid("f-name", !name); if (!name) ok = false;
+        var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        markInvalid("f-email", !emailOk); if (!emailOk) ok = false;
+        var briefOk = briefVal.length > 0 && briefVal.length <= 500;
+        markInvalid("f-brief", !briefOk); if (!briefOk) ok = false;
+
+        if (!ok) return;
+        form.style.display = "none";
+        success.style.display = "block";
+      });
+
+      /* ------------------------------ Misc -------------------------------- */
+      document.getElementById("year").textContent = String(new Date().getFullYear());
+
+      /* Duplicate marquee track for a seamless infinite loop */
+      var track = document.getElementById("marqueeTrack");
+      track.innerHTML += track.innerHTML;
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  
+  <defs>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6C63FF"/><stop offset="1" stop-color="#00E5BE"/>
+    </linearGradient>
+    <linearGradient id="cardfade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A1A24"/><stop offset="1" stop-color="#111118"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="#0A0A0F"/>
+  <line x1="0" y1="0" x2="1600" y2="0" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="52" x2="1600" y2="52" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="104" x2="1600" y2="104" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="156" x2="1600" y2="156" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="208" x2="1600" y2="208" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="260" x2="1600" y2="260" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="312" x2="1600" y2="312" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="364" x2="1600" y2="364" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="416" x2="1600" y2="416" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="468" x2="1600" y2="468" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="520" x2="1600" y2="520" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="572" x2="1600" y2="572" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="624" x2="1600" y2="624" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="676" x2="1600" y2="676" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="728" x2="1600" y2="728" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="780" x2="1600" y2="780" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="832" x2="1600" y2="832" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="884" x2="1600" y2="884" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="936" x2="1600" y2="936" stroke="#ffffff" stroke-opacity="0.03"/><line x1="0" y1="988" x2="1600" y2="988" stroke="#ffffff" stroke-opacity="0.03"/>
+  
+    <rect x="60" y="60" width="1480" height="90" rx="10" fill="none" stroke="#5A5A72" stroke-dasharray="7 6" stroke-width="1.5"/>
+    <text x="74" y="86" font-family="monospace" font-size="14" fill="#5A5A72">01 · NAV</text>
+  
+    <rect x="60" y="190" width="700" height="320" rx="10" fill="none" stroke="#5A5A72" stroke-dasharray="7 6" stroke-width="1.5"/>
+    <text x="74" y="216" font-family="monospace" font-size="14" fill="#5A5A72">02 · HERO / VALUE PROP</text>
+  
+    <rect x="800" y="190" width="740" height="320" rx="10" fill="none" stroke="#5A5A72" stroke-dasharray="7 6" stroke-width="1.5"/>
+    <text x="814" y="216" font-family="monospace" font-size="14" fill="#5A5A72">03 · PRIMARY VISUAL</text>
+  
+    <rect x="60" y="550" width="470" height="200" rx="10" fill="none" stroke="#5A5A72" stroke-dasharray="7 6" stroke-width="1.5"/>
+    <text x="74" y="576" font-family="monospace" font-size="14" fill="#5A5A72">04 · PROOF</text>
+  
+    <rect x="565" y="550" width="470" height="200" rx="10" fill="none" stroke="#5A5A72" stroke-dasharray="7 6" stroke-width="1.5"/>
+    <text x="579" y="576" font-family="monospace" font-size="14" fill="#5A5A72">05 · OFFER</text>
+  
+    <rect x="1070" y="550" width="470" height="200" rx="10" fill="none" stroke="#5A5A72" stroke-dasharray="7 6" stroke-width="1.5"/>
+    <text x="1084" y="576" font-family="monospace" font-size="14" fill="#5A5A72">06 · CTA</text>
+  
+    <rect x="60" y="790" width="1480" height="150" rx="10" fill="none" stroke="#5A5A72" stroke-dasharray="7 6" stroke-width="1.5"/>
+    <text x="74" y="816" font-family="monospace" font-size="14" fill="#5A5A72">07 · FOOTER / TRUST</text>
+  <circle cx="1480" cy="255" r="26" fill="none" stroke="#6C63FF" stroke-width="2"/>
+  <path d="M1470 255h20M1480 245v20" stroke="#6C63FF" stroke-width="2"/>
+  <text x="60" y="975" font-family="monospace" font-size="15" fill="#5A5A72">wireframe — low fidelity · v3 approved</text>
+</svg>
