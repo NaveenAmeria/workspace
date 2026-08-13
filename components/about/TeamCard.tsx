@@ -2,8 +2,7 @@ import type { TeamMember } from "@/types/team";
 
 /**
  * Single team member card for the About page grid — gradient initial
- * headshot placeholder, department pill, role, bio, skill tags, and the
- * italic fun detail.
+ * headshot placeholder, department pill, role, bio, and skill tags.
  */
 export default function TeamCard({ member }: { member: TeamMember }) {
   return (
@@ -42,10 +41,6 @@ export default function TeamCard({ member }: { member: TeamMember }) {
           </li>
         ))}
       </ul>
-
-      <p className="mt-5 border-t border-line pt-4 text-[13px] italic leading-relaxed text-dim">
-        &ldquo;{member.funFact}&rdquo;
-      </p>
     </article>
   );
 }

@@ -17,12 +17,12 @@ const FAQS: FAQ[] = [
   {
     question: "How long does a typical website project take?",
     answer:
-      "Most SmoothCuts projects run between 6–10 weeks from discovery to launch, depending on scope. We'll give you a fixed timeline in your proposal so there are never any surprises.",
+      "Most SmoothCuts projects run between 1-3 weeks from discovery to launch, depending on scope. We'll give you a fixed timeline in your proposal so there are never any surprises.",
   },
   {
     question: "What does a SmoothCuts website cost?",
     answer:
-      "Our custom websites typically start at $5,000 for foundational business sites and scale based on complexity, pages, and custom functionality. We offer clear, itemized proposals — no hidden fees.",
+      "Our custom websites typically start at $500 for foundational business sites and scale based on complexity, pages, and custom functionality. We offer clear, itemized proposals — no hidden fees.",
   },
   {
     question: "Do you work with clients outside your city?",

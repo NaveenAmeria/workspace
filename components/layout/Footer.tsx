@@ -7,7 +7,7 @@ import { SITE, SOCIAL_LINKS } from "@/lib/site";
  * followed by the legal bottom row.
  */
 export default function Footer() {
-  const year = new Date().getFullYear();
+  // const year = new Date().getFullYear();
 
   return (
     <footer role="contentinfo" className="border-t border-line bg-base">
@@ -99,7 +99,7 @@ export default function Footer() {
 
         {/* Bottom row */}
         <div className="mt-16 flex flex-col gap-3 border-t border-line pt-8 text-[13px] text-dim md:flex-row md:items-center md:justify-between">
-          <p>© {year} SmoothCuts. All rights reserved.</p>
+          <p>© 2025 SmoothCuts. All rights reserved.</p>
           <p>Built by SmoothCuts. Obviously.</p>
         </div>
       </div>

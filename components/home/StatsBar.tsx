@@ -15,10 +15,10 @@ interface Stat {
 }
 
 const STATS: Stat[] = [
-  { value: 50, suffix: "+", label: "Projects Launched" },
-  { value: 8, label: "In-House Experts" },
+  { value: 30, suffix: "+", label: "Projects Launched" },
+  { value: 9, label: "In-House Experts" },
   { value: 100, suffix: "%", label: "On-Time Delivery" },
-  { value: 4.9, decimals: 1, suffix: "★", label: "Client Rating" },
+  { value: 4.8, decimals: 1, suffix: "★", label: "Client Rating" },
 ];
 
 export default function StatsBar() {

@@ -11,10 +11,10 @@ import { CheckIcon, LockIcon } from "@/components/ui/Icons";
  */
 
 const BUDGET_OPTIONS = [
-  "Under $5,000",
-  "$5,000 – $10,000",
-  "$10,000 – $25,000",
-  "$25,000+",
+  "Under $500",
+  "$500 – $1,000",
+  "$1,000 – $2,500",
+  "$2,500 – $5,000",
   "Not sure yet",
 ];
 
@@ -55,16 +55,30 @@ export default function ContactForm() {
     return next;
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const fieldErrors = validate(form);
     setErrors(fieldErrors);
     if (Object.keys(fieldErrors).length > 0) return;
 
-    // Simulated async submit — replace with a real POST to your endpoint.
     setStatus("sending");
-    window.setTimeout(() => setStatus("sent"), 800);
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: new FormData(form),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatus("sent");
+      } else {
+        setStatus("idle");
+        alert(data.message ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setStatus("idle");
+      alert("Network error. Please check your connection and try again.");
+    }
   };
 
   if (status === "sent") {
@@ -100,6 +114,10 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
+      {/* Web3Forms access key — replace with your own from https://web3forms.com */}
+      <input type="hidden" name="access_key" value="2952c9b2-3b32-4bb9-a654-b62a9223826b" />
+      <input type="hidden" name="subject" value="New Project Inquiry — SmoothCuts" />
+      <input type="hidden" name="from_name" value="SmoothCuts Contact Form" />
       {/* Full name */}
       <div>
         <label htmlFor="name" className="mb-2 block text-sm font-medium text-snow">

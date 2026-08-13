@@ -14,7 +14,7 @@ import { ArrowRightIcon } from "@/components/ui/Icons";
  */
 
 /** Grayscale placeholder logo marks for the trust row. */
-const CLIENT_MARKS = ["NORTHCOTE", "VELA&CO", "PIPELINE", "HAVEN", "ARCLIGHT"];
+const CLIENT_MARKS = ["UrbanBites Cafe & Bakery", "Aarya Handicrafts", "Dr. Sharma Dental", "Veloce Logistics", "Zenith Academy", "Aura Spa & Salon"];
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -110,7 +110,7 @@ export default function Hero() {
 
           {/* Social proof micro-bar */}
           <div data-hero-reveal className="mt-12 border-t border-line pt-6">
-            <p className="text-sm text-dim">Trusted by 50+ growing businesses</p>
+            <p className="text-sm text-dim">Trusted by 30+ growing businesses</p>
             <ul className="mt-4 flex flex-wrap items-center gap-3" aria-label="Client logos">
               {CLIENT_MARKS.map((mark) => (
                 <li
@@ -139,7 +139,7 @@ export default function Hero() {
                 <span className="h-2.5 w-2.5 rounded-full bg-gold" aria-hidden="true" />
                 <span className="h-2.5 w-2.5 rounded-full bg-mint" aria-hidden="true" />
                 <span className="ml-3 flex-1 truncate rounded-md bg-base px-3 py-1 font-mono text-[11px] text-dim">
-                  smoothcuts.studio
+                  smoothcuts.online
                 </span>
               </div>
               <Image

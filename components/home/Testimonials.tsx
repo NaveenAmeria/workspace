@@ -17,21 +17,21 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "SmoothCuts completely transformed how our business looks online. Within 60 days of launch, our inbound leads doubled. The team was professional, fast, and genuinely cared about our results.",
-    name: "Amara Coyle",
-    title: "CEO, Auravelle",
+      "The speed at which we can now respond to leads has fundamentally changed our closing rate. The site looks exactly as premium as the properties we sell.",
+    name: "Vikram Desai",
+    title: "Managing Partner, Royal Milestone",
   },
   {
     quote:
-      "We'd worked with two other agencies before SmoothCuts. The difference was night and day. They delivered exactly what they promised, on time, and our page speed went from 48 to 97 on Google.",
-    name: "Daniel Reyes",
-    title: "Founder, Meridien Partners",
+      "Our front desk is finally calm, and we're seeing a steady stream of new patients from the neighborhood. The digital transformation has been incredible.",
+    name: "Dr. Amit Sharma",
+    title: "Lead Dentist, Sharma Dental",
   },
   {
     quote:
-      "The SmoothCuts team made the whole process completely painless. They understood our business immediately and built a site that actually converts visitors. Best investment we've made in years.",
-    name: "Priya Nair",
-    title: "Marketing Director, Flowpilot",
+      "The tracking portal alone saved us hundreds of man-hours. Our corporate clients love the transparency and the self-serve invoice dashboard.",
+    name: "Sanjay Patel",
+    title: "Operations Head, Veloce Logistics",
   },
 ];
 

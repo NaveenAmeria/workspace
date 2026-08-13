@@ -9,13 +9,13 @@ export const SITE = {
   tagline: "Built for businesses that mean business.",
   positioning:
     "We Build Websites That Work As Hard As You Do — Custom Web Design & Development for Ambitious Small Businesses",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://smoothcuts.studio",
-  email: "hello@smoothcuts.studio",
-  phone: "+1 (555) 013-4882",
-  phoneHref: "tel:+15550134882",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://smoothcuts.online",
+  email: "hello@smoothcuts.online",
+  phone: "+91 6378523651",
+  phoneHref: "tel:+91 6378523651",
   address: "Level 4, Startup Hub, Malviya Nagar, Jaipur, Rajasthan 302017",
   mapQuery: "Malviya Nagar, Jaipur, Rajasthan",
-  foundingYear: 2019,
+  foundingYear: 2025,
 } as const;
 
 /** Primary navigation links shown in the global navbar. */
@@ -28,8 +28,8 @@ export const NAV_LINKS = [
 
 /** Social profiles shown in the footer and contact trust card. */
 export const SOCIAL_LINKS = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/smoothcuts", icon: "linkedin" },
-  { label: "Instagram", href: "https://www.instagram.com/smoothcuts", icon: "instagram" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/smoothcuts", icon: "linkedin" },
+  { label: "Instagram", href: "https://www.instagram.com/smoothcuts69", icon: "instagram" },
   { label: "Dribbble", href: "https://dribbble.com/smoothcuts", icon: "dribbble" },
   { label: "Twitter / X", href: "https://x.com/smoothcuts", icon: "x" },
 ] as const;

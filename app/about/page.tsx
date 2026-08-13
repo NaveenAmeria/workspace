@@ -51,7 +51,7 @@ export default function AboutPage() {
                 that generate leads, build trust, and grow with the business.
               </p>
               <p>
-                We&apos;re a team of eight specialists — designers, engineers,
+                We&apos;re a team of nine specialists — designers, engineers,
                 strategists, and perfectionists — who&apos;ve each dedicated
                 their careers to one craft. No generalists. No outsourcing. No
                 junior work shipped on your behalf. Every project gets our
@@ -77,7 +77,7 @@ export default function AboutPage() {
               id="advantage-heading"
               className="max-w-3xl font-display text-[clamp(32px,4vw,56px)] font-bold leading-[1.1] tracking-[-0.02em] text-snow"
             >
-              Eight People. Zero Compromises.
+              Nine People. Zero Compromises.
             </h2>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-mute">
               Our size isn&apos;t a limitation. It&apos;s your competitive
@@ -119,7 +119,7 @@ export default function AboutPage() {
               Meet the Team
             </h2>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-mute">
-              Eight specialists. One shared obsession with quality.
+              Nine specialists. One shared obsession with quality.
             </p>
           </Reveal>
 
