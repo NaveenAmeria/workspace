@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SOCIAL_ICONS } from "@/components/ui/Icons";
+import BackToTop from "@/components/ui/BackToTop";
 import { SITE, SOCIAL_LINKS } from "@/lib/site";
 
 /**
@@ -34,9 +35,12 @@ export default function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`SmoothCuts on ${social.label}`}
-                      className="flex h-11 w-11 items-center justify-center text-dim transition-all duration-200 hover:-translate-y-0.5 hover:text-violet"
+                      className="group flex h-11 w-11 items-center justify-center rounded-lg text-dim transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet/10 hover:text-violet"
                     >
-                      <Icon size={20} />
+                      <Icon
+                        size={20}
+                        className="transition-transform duration-200 group-hover:scale-110"
+                      />
                     </a>
                   </li>
                 );
@@ -101,13 +105,14 @@ export default function Footer() {
         <div className="mt-16 flex flex-col gap-3 border-t border-line pt-8 text-[13px] text-dim md:flex-row md:items-center md:justify-between">
           <p>© 2025 SmoothCuts. All rights reserved.</p>
           <p>Built by SmoothCuts. Obviously.</p>
+          <BackToTop />
         </div>
       </div>
     </footer>
   );
 }
 
-/** Shared styling for footer text links. */
+/** Shared styling for footer text links — animated left-to-right underline. */
 function FooterLink({
   href,
   children,
@@ -118,9 +123,13 @@ function FooterLink({
   return (
     <Link
       href={href}
-      className="text-[15px] text-mute transition-colors duration-150 hover:text-violet"
+      className="group relative inline-block text-[15px] text-mute transition-colors duration-150 hover:text-violet"
     >
       {children}
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-violet transition-transform duration-300 ease-out group-hover:scale-x-100"
+      />
     </Link>
   );
 }

@@ -18,12 +18,12 @@ export default function TagPill({
 }: TagPillProps) {
   const styles =
     variant === "mint"
-      ? "border-mint/30 bg-mint/10 text-mint"
-      : "border-violet/30 bg-violet/[0.12] text-violet";
+      ? "border-mint/30 bg-mint/10 text-mint hover:border-mint/70"
+      : "border-violet/30 bg-violet/[0.12] text-violet hover:border-violet/70";
 
   return (
     <span
-      className={`inline-block rounded border px-2.5 py-1 font-mono text-[12px] leading-none ${styles} ${className}`}
+      className={`inline-block rounded border px-2.5 py-1 font-mono text-[12px] leading-none transition-all duration-200 hover:-translate-y-0.5 ${styles} ${className}`}
     >
       {children}
     </span>

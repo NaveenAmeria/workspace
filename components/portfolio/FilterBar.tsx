@@ -61,8 +61,8 @@ export default function FilterBar({ projects }: { projects: Project[] }) {
                 aria-pressed={isActive}
                 className={`min-h-11 shrink-0 whitespace-nowrap rounded-full border px-5 py-2 text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? "border-violet bg-violet text-white"
-                    : "border-line bg-transparent text-mute hover:border-violet hover:text-violet"
+                    ? "animate-pop border-violet bg-violet text-white shadow-[0_4px_16px_rgba(108,99,255,0.3)]"
+                    : "border-line bg-transparent text-mute hover:-translate-y-0.5 hover:border-violet hover:text-violet"
                 }`}
               >
                 {filter}

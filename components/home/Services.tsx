@@ -92,10 +92,10 @@ export default function Services() {
               <Reveal key={service.title} delay={i * 80}>
                 <article className="group h-full rounded-card border border-line bg-card p-8 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-violet hover:shadow-glow-violet">
                   <div className="flex items-start justify-between">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-lg border border-line bg-base text-mute transition-colors duration-300 group-hover:text-violet">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-lg border border-line bg-base text-mute transition-all duration-300 group-hover:-rotate-6 group-hover:scale-110 group-hover:border-violet/40 group-hover:bg-violet/[0.08] group-hover:text-violet">
                       <Icon size={22} />
                     </span>
-                    <span className="font-mono text-[12px] text-dim">
+                    <span className="font-mono text-[12px] text-dim transition-colors duration-300 group-hover:text-violet">
                       {service.phase}
                     </span>
                   </div>

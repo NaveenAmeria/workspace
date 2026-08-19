@@ -33,6 +33,7 @@ export default function ContactForm() {
   const [brief, setBrief] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [shaking, setShaking] = useState(false);
 
   const validate = (form: HTMLFormElement): FieldErrors => {
     const data = new FormData(form);
@@ -60,7 +61,11 @@ export default function ContactForm() {
     const form = event.currentTarget;
     const fieldErrors = validate(form);
     setErrors(fieldErrors);
-    if (Object.keys(fieldErrors).length > 0) return;
+    if (Object.keys(fieldErrors).length > 0) {
+      // Briefly shake the invalid fields to draw the eye.
+      setShaking(true);
+      return;
+    }
 
     setStatus("sending");
     try {
@@ -87,7 +92,7 @@ export default function ContactForm() {
         role="status"
         className="flex flex-col items-center rounded-lg border border-mint/30 bg-mint/[0.06] px-8 py-14 text-center"
       >
-        <span className="flex h-14 w-14 items-center justify-center rounded-full border border-mint/30 bg-mint/10 text-mint">
+        <span className="animate-pop flex h-14 w-14 items-center justify-center rounded-full border border-mint/30 bg-mint/10 text-mint shadow-[0_0_40px_rgba(0,229,190,0.25)]">
           <CheckIcon size={28} />
         </span>
         <h3 className="mt-6 font-display text-2xl font-bold text-snow">
@@ -113,7 +118,12 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form
+      onSubmit={handleSubmit}
+      onAnimationEnd={() => setShaking(false)}
+      noValidate
+      className="space-y-5"
+    >
       {/* Web3Forms access key — replace with your own from https://web3forms.com */}
       <input type="hidden" name="access_key" value="2952c9b2-3b32-4bb9-a654-b62a9223826b" />
       <input type="hidden" name="subject" value="New Project Inquiry — SmoothCuts" />
@@ -131,7 +141,7 @@ export default function ContactForm() {
           placeholder="Your full name"
           aria-invalid={Boolean(errors.name)}
           aria-describedby={errors.name ? "name-error" : undefined}
-          className={FIELD_CLASSES}
+          className={`${FIELD_CLASSES} ${shaking && errors.name ? "animate-shake border-coral/60" : ""}`}
         />
         {errors.name && (
           <p id="name-error" role="alert" className="mt-1.5 text-sm text-coral">
@@ -153,7 +163,7 @@ export default function ContactForm() {
           placeholder="you@company.com"
           aria-invalid={Boolean(errors.email)}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className={FIELD_CLASSES}
+          className={`${FIELD_CLASSES} ${shaking && errors.email ? "animate-shake border-coral/60" : ""}`}
         />
         {errors.email && (
           <p id="email-error" role="alert" className="mt-1.5 text-sm text-coral">
@@ -209,7 +219,7 @@ export default function ContactForm() {
           placeholder="Briefly describe your project, goals, and any specific requirements..."
           aria-invalid={Boolean(errors.brief)}
           aria-describedby={errors.brief ? "brief-error" : "brief-counter"}
-          className={`${FIELD_CLASSES} resize-y`}
+          className={`${FIELD_CLASSES} resize-y ${shaking && errors.brief ? "animate-shake border-coral/60" : ""}`}
         />
         <div className="mt-1.5 flex items-center justify-between">
           {errors.brief ? (

@@ -55,7 +55,7 @@ export default function Testimonials() {
         <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {TESTIMONIALS.map((t, i) => (
             <Reveal key={t.name} delay={i * 80}>
-              <figure className="flex h-full flex-col rounded-card border border-line bg-card px-8 py-10 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-violet hover:shadow-glow-violet">
+              <figure className="group flex h-full flex-col rounded-card border border-line bg-card px-8 py-10 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-violet hover:shadow-glow-violet">
                 {/* 5-star rating */}
                 <div
                   className="flex gap-1 text-gold"
@@ -63,7 +63,12 @@ export default function Testimonials() {
                   aria-label="Rated 5 out of 5 stars"
                 >
                   {Array.from({ length: 5 }).map((_, star) => (
-                    <StarIcon key={star} size={18} />
+                    <StarIcon
+                      key={star}
+                      size={18}
+                      className="animate-star-pop"
+                      style={{ animationDelay: `${star * 60}ms` }}
+                    />
                   ))}
                 </div>
 
@@ -75,7 +80,7 @@ export default function Testimonials() {
                   {/* Avatar placeholder — initials on brand gradient */}
                   <span
                     aria-hidden="true"
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-white"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-white transition-transform duration-300 ease-out group-hover:scale-110 group-hover:shadow-[0_0_24px_rgba(108,99,255,0.45)]"
                     style={{
                       background:
                         "linear-gradient(135deg, #6C63FF 0%, #00E5BE 100%)",

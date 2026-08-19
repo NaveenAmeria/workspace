@@ -57,12 +57,12 @@ export default function FAQAccordion() {
                 aria-expanded={isOpen}
                 aria-controls={`faq-panel-${i}`}
                 id={`faq-button-${i}`}
-                className="flex min-h-12 w-full items-center justify-between gap-6 py-6 text-left text-lg font-semibold text-snow transition-colors duration-150 hover:text-violet"
+                className="group flex min-h-12 w-full items-center justify-between gap-6 py-6 text-left text-lg font-semibold text-snow transition-colors duration-150 hover:text-violet"
               >
                 {faq.question}
                 <ChevronDownIcon
                   size={20}
-                  className={`shrink-0 text-violet transition-transform duration-300 ${
+                  className={`shrink-0 text-violet transition-transform duration-300 group-hover:translate-y-0.5 ${
                     isOpen ? "rotate-180" : ""
                   }`}
                 />
@@ -76,7 +76,11 @@ export default function FAQAccordion() {
                 isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
               }`}
             >
-              <div className="overflow-hidden">
+              <div
+                className={`overflow-hidden transition-transform duration-300 ease-out ${
+                  isOpen ? "translate-y-0" : "-translate-y-1.5"
+                }`}
+              >
                 <p className="max-w-3xl pb-6 text-base leading-relaxed text-mute">
                   {faq.answer}
                 </p>

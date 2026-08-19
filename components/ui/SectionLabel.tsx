@@ -12,7 +12,10 @@ export default function SectionLabel({ text, className = "" }: SectionLabelProps
     <p
       className={`font-mono text-[13px] uppercase tracking-[0.12em] text-violet ${className}`}
     >
-      <span className="mr-3 inline-block h-px w-6 translate-y-[-3px] bg-violet" aria-hidden="true" />
+      <span
+        className="section-label-dash mr-3 inline-block h-px translate-y-[-3px] bg-violet"
+        aria-hidden="true"
+      />
       {text}
     </p>
   );

@@ -72,26 +72,56 @@ body {
  * Shared utilities (complement Tailwind — used by several components)
  * ------------------------------------------------------------------------- */
 
-/* Primary display gradient used for highlighted words, stat numbers, steps */
+/* Primary display gradient used for highlighted words, stat numbers, steps.
+ * Background is oversized and slowly panned so the gradient "breathes". */
 .gradient-text {
   background: linear-gradient(
     135deg,
     rgb(var(--color-violet)) 0%,
-    rgb(var(--color-mint)) 100%
+    rgb(var(--color-mint)) 50%,
+    rgb(var(--color-violet-h)) 100%
   );
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+  animation: gradient-pan 8s ease-in-out infinite alternate;
 }
 
-/* CTA button gradient */
+/* CTA button gradient + hover shine sweep */
 .gradient-cta {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(
     135deg,
     rgb(var(--color-violet)) 0%,
     rgb(var(--color-violet-h)) 100%
   );
+}
+.gradient-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  transform: translateX(-160%) skewX(-20deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+.gradient-cta:hover::after,
+.gradient-cta:focus-visible::after {
+  animation: shine-sweep 700ms ease;
+}
+.gradient-cta:disabled::after {
+  content: none;
 }
 
 /* Glassmorphism — nav on scroll, mobile menu, floating UI */
@@ -158,6 +188,44 @@ body {
   transform: translateX(0);
 }
 
+/* Section-label leading dash: draws itself out when its reveal fires */
+.section-label-dash {
+  width: 24px;
+}
+.reveal .section-label-dash {
+  width: 0;
+  transition: width 700ms var(--ease-out-expo) 200ms;
+}
+.reveal.is-visible .section-label-dash {
+  width: 24px;
+}
+
+/* Page-enter fade for route changes (wrapper keyed on pathname) */
+.page-enter {
+  animation: page-enter 500ms var(--ease-out-expo) both;
+}
+
+/* Shine sweep utility for card thumbnails — triggered by a group hover */
+.shine-sweep {
+  position: relative;
+}
+.shine-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-130%) skewX(-12deg);
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.09) 50%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+.group:hover .shine-sweep::after {
+  animation: card-shine 900ms var(--ease-out-expo);
+}
+
 /* ---------------------------------------------------------------------------
  * Keyframe animations
  * ------------------------------------------------------------------------- */
@@ -173,6 +241,10 @@ body {
 }
 .animate-marquee {
   animation: marquee-scroll 32s linear infinite;
+}
+/* Pause the ticker while the pointer rests on it */
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 /* Gentle floating motion for the hero browser mockup */
@@ -232,6 +304,125 @@ body {
 }
 .animate-glow {
   animation: glow-pulse 7s ease-in-out infinite;
+}
+
+/* Slowly pan a background gradient (stats band, CTA banner) */
+@keyframes gradient-pan {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+.animate-gradient-pan {
+  background-size: 200% 200%;
+  animation: gradient-pan 10s ease-in-out infinite alternate;
+}
+
+/* Diagonal light sweep that plays across a CTA on hover */
+@keyframes shine-sweep {
+  0% {
+    transform: translateX(-160%) skewX(-20deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(310%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+/* Light sweep across a card thumbnail on group hover */
+@keyframes card-shine {
+  to {
+    transform: translateX(130%) skewX(-12deg);
+  }
+}
+
+/* Bouncy pop-in for activated filter pills and success icons */
+@keyframes pop-in {
+  0% {
+    transform: scale(0.85);
+  }
+  60% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-pop {
+  animation: pop-in 350ms var(--ease-out-expo);
+}
+
+/* Testimonial stars pop one-by-one when the card is hovered */
+@keyframes star-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+.group:hover .animate-star-pop {
+  animation: star-pop 450ms var(--ease-out-expo);
+}
+
+/* Gentle hop for the wordmark's violet dot */
+@keyframes dot-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.animate-dot {
+  display: inline-block;
+  animation: dot-bounce 1.8s ease-in-out infinite;
+}
+
+/* Quick horizontal shake for invalid form fields */
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-3px);
+  }
+  40%,
+  60% {
+    transform: translateX(3px);
+  }
+}
+.animate-shake {
+  animation: shake 400ms ease;
+}
+
+/* Soft fade-up when a route's content mounts.
+ * Ends at `transform: none` so no containing block lingers for
+ * fixed-position descendants. */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Portfolio filter transitions: cards animate in/out when filtering */

@@ -20,18 +20,18 @@ export default function ProcessGallery({
           delay={i * 80}
           className={item.wide ? "sm:col-span-2" : ""}
         >
-          <figure>
-            <div className="overflow-hidden rounded-card border border-line">
+          <figure className="group">
+            <div className="shine-sweep overflow-hidden rounded-card border border-line transition-colors duration-300 group-hover:border-violet/50">
               <Image
                 src={item.src}
                 alt={item.alt}
                 width={1600}
                 height={1000}
                 quality={85}
-                className="h-auto w-full transition-transform duration-500 ease-out hover:scale-[1.02]"
+                className="h-auto w-full transition-transform duration-500 ease-out group-hover:scale-[1.02]"
               />
             </div>
-            <figcaption className="mt-3 font-mono text-[13px] text-dim">
+            <figcaption className="mt-3 font-mono text-[13px] text-dim transition-colors duration-300 group-hover:text-violet">
               {item.caption}
             </figcaption>
           </figure>

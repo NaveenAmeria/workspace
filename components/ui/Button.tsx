@@ -28,9 +28,9 @@ interface ButtonProps extends BaseProps {
 
 const VARIANT_STYLES = {
   primary:
-    "gradient-cta text-white font-medium shadow-[0_4px_20px_rgba(108,99,255,0.25)] hover:scale-[1.03] hover:shadow-btn-hover transition-all duration-200 ease-out",
+    "gradient-cta group text-white font-medium shadow-[0_4px_20px_rgba(108,99,255,0.25)] hover:scale-[1.03] hover:shadow-btn-hover active:scale-[0.99] transition-all duration-200 ease-out",
   ghost:
-    "border border-line bg-transparent text-snow hover:border-violet hover:text-violet transition-colors duration-200",
+    "border border-line bg-transparent text-snow hover:border-violet hover:text-violet hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200",
 } as const;
 
 export default function Button(props: LinkProps | ButtonProps) {

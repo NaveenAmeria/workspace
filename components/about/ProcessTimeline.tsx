@@ -29,20 +29,23 @@ export default function ProcessTimeline() {
 
         <ol className="mt-14 flex flex-col gap-10 xl:flex-row xl:gap-0">
           {PROCESS_STEPS.map((step, i) => (
-            <li key={step.title} className="relative flex-1 xl:px-5 xl:first:pl-0 xl:last:pr-0">
+            <li
+              key={step.title}
+              className="group relative flex-1 xl:px-5 xl:first:pl-0 xl:last:pr-0"
+            >
               <Reveal direction="left" delay={i * 120}>
                 {/* Connector line (desktop) */}
                 {i > 0 && (
                   <span
                     aria-hidden="true"
-                    className="absolute -left-5 top-7 hidden h-px w-10 bg-line xl:block"
+                    className="absolute -left-5 top-7 hidden h-px w-10 bg-line transition-colors duration-300 group-hover:bg-violet/70 xl:block"
                   />
                 )}
                 {/* Gradient step number */}
-                <span className="gradient-text font-display text-5xl font-extrabold leading-none tracking-tight">
+                <span className="gradient-text inline-block font-display text-5xl font-extrabold leading-none tracking-tight transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-110 group-hover:drop-shadow-[0_0_14px_rgba(108,99,255,0.55)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="mt-4 font-display text-lg font-semibold text-snow">
+                <h3 className="mt-4 font-display text-lg font-semibold text-snow transition-colors duration-300 group-hover:text-violet">
                   {step.title}
                 </h3>
                 <p className="mt-2 text-[15px] leading-relaxed text-mute">

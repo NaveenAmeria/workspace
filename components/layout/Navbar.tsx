@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import MobileMenu from "@/components/layout/MobileMenu";
 import { NAV_LINKS } from "@/lib/site";
 
@@ -16,13 +16,32 @@ export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const progressRef = useRef<HTMLDivElement>(null);
 
-  // Switch to the glass state after 80px of scroll.
+  // Switch to the glass state after 80px of scroll and update the
+  // scroll-progress bar along the header's bottom edge.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    let frame = 0;
+    const onScroll = () => {
+      setScrolled(window.scrollY > 80);
+      // Throttle the progress bar update to animation frames.
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const el = progressRef.current;
+        if (!el) return;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+        el.style.transform = `scaleX(${progress})`;
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   // Close the mobile menu on route changes and lock body scroll while open.
@@ -59,7 +78,7 @@ export default function Navbar() {
             className="font-display text-xl font-extrabold tracking-tight text-snow transition-colors duration-150 hover:text-violet"
             aria-label="SmoothCuts — home"
           >
-            SmoothCuts<span className="text-violet">.</span>
+            SmoothCuts<span className="animate-dot text-violet">.</span>
           </Link>
 
           {/* Desktop links */}
@@ -130,6 +149,23 @@ export default function Navbar() {
             </button>
           </div>
         </nav>
+
+        {/* Scroll progress bar along the header's bottom edge */}
+        <div
+          aria-hidden="true"
+          className={`absolute inset-x-0 bottom-0 h-[2px] overflow-hidden transition-opacity duration-500 ${
+            scrolled ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            ref={progressRef}
+            className="h-full w-full origin-left scale-x-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgb(var(--color-violet)), rgb(var(--color-mint)))",
+            }}
+          />
+        </div>
       </header>
 
       <MobileMenu open={menuOpen} onClose={closeMenu} />

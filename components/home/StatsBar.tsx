@@ -25,7 +25,7 @@ export default function StatsBar() {
   return (
     <section
       aria-label="Agency statistics"
-      className="border-y border-line py-16"
+      className="animate-gradient-pan border-y border-line py-16"
       style={{
         background:
           "linear-gradient(135deg, rgba(108,99,255,0.08) 0%, rgba(0,229,190,0.08) 100%)",
@@ -35,12 +35,12 @@ export default function StatsBar() {
         {STATS.map((stat, i) => (
           <div
             key={stat.label}
-            className={`flex flex-col items-center px-4 text-center ${
+            className={`group flex flex-col items-center px-4 text-center ${
               i > 0 ? "xl:border-l xl:border-line" : ""
             } ${i % 2 === 1 ? "border-l border-line xl:border-l" : ""}`}
           >
             <Reveal delay={i * 80}>
-              <dd className="font-display text-[clamp(40px,5vw,64px)] font-extrabold leading-none tracking-tight">
+              <dd className="font-display text-[clamp(40px,5vw,64px)] font-extrabold leading-none tracking-tight transition-transform duration-300 ease-out group-hover:scale-110">
                 <CountUp
                   value={stat.value}
                   decimals={stat.decimals}
@@ -49,7 +49,9 @@ export default function StatsBar() {
                   className="gradient-text"
                 />
               </dd>
-              <dt className="mt-3 text-sm text-mute">{stat.label}</dt>
+              <dt className="mt-3 text-sm text-mute transition-colors duration-300 group-hover:text-snow">
+                {stat.label}
+              </dt>
             </Reveal>
           </div>
         ))}

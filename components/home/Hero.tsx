@@ -20,6 +20,7 @@ export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   // Entrance timeline — fade/slide in labels, headline, sub, CTAs in sequence.
+  // Plus a gentle mouse parallax on the browser mockup (fine pointers only).
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -43,7 +44,27 @@ export default function Hero() {
       );
     }, rootRef);
 
-    return () => ctx.revert();
+    // Skip parallax on touch devices — no meaningful pointer position.
+    const visual = rootRef.current?.querySelector("[data-hero-parallax]");
+    if (!visual || !window.matchMedia("(pointer: fine)").matches) {
+      return () => ctx.revert();
+    }
+
+    const xTo = gsap.quickTo(visual, "x", { duration: 0.7, ease: "power3.out" });
+    const yTo = gsap.quickTo(visual, "y", { duration: 0.7, ease: "power3.out" });
+    const onMove = (event: MouseEvent) => {
+      const nx = (event.clientX / window.innerWidth - 0.5) * 2; // -1 … 1
+      const ny = (event.clientY / window.innerHeight - 0.5) * 2;
+      xTo(nx * 12);
+      yTo(ny * 10);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      gsap.killTweensOf(visual);
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -95,10 +116,13 @@ export default function Hero() {
           <div data-hero-reveal className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
             <Link
               href="/contact"
-              className="gradient-cta inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-medium text-white shadow-[0_4px_20px_rgba(108,99,255,0.25)] transition-all duration-200 ease-out hover:scale-[1.03] hover:shadow-btn-hover"
+              className="gradient-cta group inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-medium text-white shadow-[0_4px_20px_rgba(108,99,255,0.25)] transition-all duration-200 ease-out hover:scale-[1.03] hover:shadow-btn-hover active:scale-[0.99]"
             >
               Start a Project
-              <ArrowRightIcon size={18} />
+              <ArrowRightIcon
+                size={18}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+              />
             </Link>
             <Link
               href="/portfolio"
@@ -115,7 +139,7 @@ export default function Hero() {
               {CLIENT_MARKS.map((mark) => (
                 <li
                   key={mark}
-                  className="rounded border border-line px-3 py-1.5 font-mono text-[11px] tracking-[0.14em] text-dim"
+                  className="rounded border border-line px-3 py-1.5 font-mono text-[11px] tracking-[0.14em] text-dim transition-all duration-200 hover:-translate-y-0.5 hover:border-violet/50 hover:text-snow"
                 >
                   {mark}
                 </li>
@@ -126,31 +150,42 @@ export default function Hero() {
 
         {/* ---------------------------- Visual anchor ----------------------------- */}
         <div data-hero-visual className="relative mx-auto w-full max-w-[560px] lg:max-w-none">
-          <div className="animate-float">
-            {/* Glow underneath the frame */}
-            <div
-              className="animate-glow pointer-events-none absolute -inset-6 rounded-[32px] shadow-glow-mockup"
-              aria-hidden="true"
-            />
-            {/* Browser chrome frame */}
-            <div className="relative overflow-hidden rounded-xl border border-line shadow-glow-mockup">
-              <div className="flex items-center gap-2 border-b border-line bg-card px-4 py-3">
-                <span className="h-2.5 w-2.5 rounded-full bg-coral" aria-hidden="true" />
-                <span className="h-2.5 w-2.5 rounded-full bg-gold" aria-hidden="true" />
-                <span className="h-2.5 w-2.5 rounded-full bg-mint" aria-hidden="true" />
-                <span className="ml-3 flex-1 truncate rounded-md bg-base px-3 py-1 font-mono text-[11px] text-dim">
-                  smoothcuts.online
-                </span>
-              </div>
-              <Image
-                src="/images/hero/hero-screen.svg"
-                alt="Screenshot of a premium SmoothCuts-designed website with a dark hero, product dashboard, and conversion-focused layout"
-                width={1440}
-                height={900}
-                priority
-                quality={85}
-                className="h-auto w-full"
+          <div data-hero-parallax className="will-change-transform">
+            <div className="animate-float group">
+              {/* Glow underneath the frame */}
+              <div
+                className="animate-glow pointer-events-none absolute -inset-6 rounded-[32px] shadow-glow-mockup"
+                aria-hidden="true"
               />
+              {/* Browser chrome frame */}
+              <div className="relative overflow-hidden rounded-xl border border-line shadow-glow-mockup">
+                <div className="flex items-center gap-2 border-b border-line bg-card px-4 py-3">
+                  <span
+                    className="h-2.5 w-2.5 rounded-full bg-coral transition-shadow duration-300 group-hover:shadow-[0_0_8px_2px_rgba(255,107,107,0.5)]"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="h-2.5 w-2.5 rounded-full bg-gold transition-shadow duration-300 group-hover:shadow-[0_0_8px_2px_rgba(255,184,0,0.5)]"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="h-2.5 w-2.5 rounded-full bg-mint transition-shadow duration-300 group-hover:shadow-[0_0_8px_2px_rgba(0,229,190,0.5)]"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-3 flex-1 truncate rounded-md bg-base px-3 py-1 font-mono text-[11px] text-dim">
+                    smoothcuts.online
+                  </span>
+                </div>
+                <Image
+                  src="/images/hero/hero-screen.svg"
+                  alt="Screenshot of a premium SmoothCuts-designed website with a dark hero, product dashboard, and conversion-focused layout"
+                  width={1440}
+                  height={900}
+                  priority
+                  quality={85}
+                  className="h-auto w-full"
+                />
+              </div>
             </div>
           </div>
         </div>
